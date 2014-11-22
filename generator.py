@@ -41,21 +41,51 @@ def block(lines):
         elif line.startswith('*'):
             testy += line.replace('*', '', 1).strip()
 
+    #print(testy)
+
     valid = ['@class', '@method', '@param', '@return']
 
+    result = {}
+    a = testy.find('@')
+    result['description'] = testy[:a]
+    testy = testy[a:]
+
+    breaks = []
     for v in valid:
-        breaks = index(testy, v)
+        breaks.extend(index(testy, v))
 
     breaks.sort()
 
-    restult = {}
-    result['description'] = testy[:breaks[0]]
-    breaks = breaks[1:]
+    #result['description'] = testy[:breaks[0]]
+    #testy = testy[breaks[0]:]
+    #breaks = breaks[1:]
 
-    #for index in breaks:
-    #    ws =
+    testa = testy
+    for i in range(len(breaks)):
+        if i == 0:
+            line = testa[:breaks[i+1]]
+        elif i == len(breaks) - 1:
+            line = testa[breaks[i]:]
+        else:
+            line = testa[breaks[i]:breaks[i+1]]
 
-    print(testy)
+        #print(line)
+
+        ws = line.find(' ')
+        if ws == -1:
+            result[line] = ''
+        else:
+            result[line[:ws]] = line[ws:].strip()
+
+    """
+    test = testy
+    for b in breaks:
+        line = test[:b]
+        test = test[b:]
+        ws = line.find(' ')
+        result[line[:ws]] = line[ws:]
+    """
+    print(result)
 
     """
     result = {}
@@ -93,14 +123,17 @@ def block(lines):
 
 def index(s, sub):
     index = 0
+    result = []
 
     while index < len(s):
         index = s.find(sub, index)
         if index == -1:
             break
 
-        print(index)
+        result.append(index)
         index += len(sub)
+
+    return result
 
 
 if __name__ == '__main__':
