@@ -72,10 +72,16 @@ def block(lines):
         #print(line)
 
         ws = line.find(' ')
-        if ws == -1:
-            result[line] = ''
-        else:
-            result[line[:ws]] = line[ws:].strip()
+        if ws > 0:
+            key = line[:ws]
+            value = line[ws:].strip()
+            if key == '@param':
+                if key in result.keys():
+                    result[key].append(value)
+                else:
+                    result[key] = [value]
+            else:
+                result[key] = value
 
     """
     test = testy
