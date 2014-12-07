@@ -3,28 +3,12 @@ import re
 
 def generator():
     with open('test.js', 'r') as f:
-        another = False
-        lines = []
 
-        # TODO: Maybe use a regex instead...
-        for line in f:
-            line = line.strip()
+        s = f.read()
+        m = re.findall(r'(\/\*\*.+?\*\/)', s, re.DOTALL)
 
-            if another:
-                lines.append(line)
-                block(lines)
-                lines = []
-                another = False
-
-            if line.startswith('/**'):
-                lines.append(line)
-
-            elif line.endswith('*/'):
-                lines.append(line)
-                another = True
-
-            elif line.startswith('*'):
-                lines.append(line)
+        for b in m:
+            block(b.split('\n'))
 
 
 def block(lines):
@@ -32,6 +16,7 @@ def block(lines):
     name = ''
 
     for line in lines:
+        line = line.strip()
         if line.startswith('/**'):
             testy += line.replace('/**', '', 1).strip()
         elif line.endswith('*/'):
