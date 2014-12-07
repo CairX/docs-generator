@@ -29,6 +29,8 @@ def generator():
 
 def block(lines):
     testy = ''
+    name = ''
+
     for line in lines:
         if line.startswith('/**'):
             testy += line.replace('/**', '', 1).strip()
@@ -36,6 +38,8 @@ def block(lines):
             testy += line[:-2]
         elif line.startswith('*'):
             testy += line.replace('*', '', 1).strip()
+        else:
+            name = line.strip()
 
     valid = ['@class', '@method', '@param', '@return']
 
@@ -71,6 +75,38 @@ def block(lines):
             else:
                 result[key] = value
 
+    #result['name'] = name
+
+    #print(result)
+    out(result)
+
+
+def out(o):
+    result = ''
+
+    if '@class' in o:
+        result += '# ' + o['@class'] + '\n'
+
+    if '@method' in o:
+        result += '## ' + o['@method'] + '\n'
+
+    if 'description' in o:
+        result += o['description'] + '\n\n'
+
+    if '@param' in o:
+        for p in o['@param']:
+            m = re.match(r'(\w+) \{(\w+?)\} (.+)', p)
+            if m:
+                #print(m.group())
+                #print(m.group(1))
+                #print(m.group(2))
+                #print(m.group(3))
+                result += '**' + m.group(1) + '**'
+                result += ' *' + m.group(2) + '*'
+                result += ' ' + m.group(3) + '\n\n'
+            #result += p + '\n'
+
+    #print('-----------------------')
     print(result)
 
 
