@@ -3,12 +3,16 @@ import re
 
 def generator():
     with open('test.js', 'r') as f:
+        comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
 
-        s = f.read()
-        m = re.findall(r'(\/\*\*.+?\*\/)', s, re.DOTALL)
+        for comment in comments:
+            block(comment.split('\n'))
 
-        for b in m:
-            block(b.split('\n'))
+            clean = re.sub(r'(\n.+\*\s+)', ' ', comment)
+            clean = clean.replace('/**', '', 1)
+            clean = clean.replace('*/', '')
+            clean = clean.strip()
+            #print(clean)
 
 
 def block(lines):
