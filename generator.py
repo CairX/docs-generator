@@ -6,13 +6,55 @@ def generator():
         comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
 
         for comment in comments:
-            block(comment.split('\n'))
+            #block(comment.split('\n'))
 
             clean = re.sub(r'(\n.+\*\s+)', ' ', comment)
             clean = clean.replace('/**', '', 1)
             clean = clean.replace('*/', '')
             clean = clean.strip()
             #print(clean)
+            splitter(clean)
+
+
+def splitter(s):
+    print('- - - - -')
+    print(s)
+    """
+    line = "Cats are smarter than dogs"
+    #matchObj = re.match(r'(.*) are (.*?) .*', line)
+    matchObj = re.search(r'param', s)
+    print(matchObj)
+    match = re.match(r'(.*) are (.*?) .*', s)
+    print(match)
+    """
+    """
+    if matchObj:
+        print("matchObj.group() : ", matchObj.group())
+        print("matchObj.group(1) : ", matchObj.group(1))
+        print("matchObj.group(2) : ", matchObj.group(2))
+    else:
+        print("No match!!")
+    """
+    """
+    print('\n')
+    print(s)
+    m = re.match(r'Ajax', s)
+    print(m)
+    """
+
+    """
+    m = re.search(r'\@class(.+?)[@|^]', s)
+    if m:
+        print(m.group())
+    else:
+        print('None')
+    """
+
+    m = re.findall(r'\@param(.+?)[\Z|\@]', s)
+    if m:
+        print(m)
+    else:
+        print('None')
 
 
 def block(lines):
