@@ -2,114 +2,70 @@ import re
 
 
 def generator():
+    tags = ['@class', '@method', '@param', '@return']
+
     with open('test.js', 'r') as f:
         comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
 
         for comment in comments:
-            #block(comment.split('\n'))
+            comment = cleanComment(comment)
+            index = indexArray(comment, tags)
+            parts = split(comment, index)
 
-            clean = re.sub(r'(\n.+\*\s+)', ' ', comment)
-            clean = clean.replace('/**', '', 1)
-            clean = clean.replace('*/', '')
-            clean = clean.strip()
-            #print(clean)
-            splitter(clean)
+            print(comment)
+            print(parts)
 
 
-def splitter(s):
-    print('- - - - -')
-    print(s)
-    """
-    line = "Cats are smarter than dogs"
-    #matchObj = re.match(r'(.*) are (.*?) .*', line)
-    matchObj = re.search(r'param', s)
-    print(matchObj)
-    match = re.match(r'(.*) are (.*?) .*', s)
-    print(match)
-    """
-    """
-    if matchObj:
-        print("matchObj.group() : ", matchObj.group())
-        print("matchObj.group(1) : ", matchObj.group(1))
-        print("matchObj.group(2) : ", matchObj.group(2))
-    else:
-        print("No match!!")
-    """
-    """
-    print('\n')
-    print(s)
-    m = re.match(r'Ajax', s)
-    print(m)
-    """
+def cleanComment(comment):
+    comment = re.sub(r'(\n.+\*\s+)', ' ', comment)
+    comment = comment.replace('/**', '', 1)
+    comment = comment.replace('*/', '')
+    comment = comment.strip()
 
-    """
-    m = re.search(r'\@class(.+?)[@|^]', s)
-    if m:
-        print(m.group())
-    else:
-        print('None')
-    """
-
-    m = re.findall(r'\@param(.+?)[\Z|\@]', s)
-    if m:
-        print(m)
-    else:
-        print('None')
+    return comment
 
 
-def block(lines):
-    testy = ''
-    name = ''
+def indexArray(s, subs):
+    result = []
 
-    for line in lines:
-        line = line.strip()
-        if line.startswith('/**'):
-            testy += line.replace('/**', '', 1).strip()
-        elif line.endswith('*/'):
-            testy += line[:-2]
-        elif line.startswith('*'):
-            testy += line.replace('*', '', 1).strip()
-        else:
-            name = line.strip()
+    for sub in subs:
+        result.extend(indexString(s, sub))
 
-    valid = ['@class', '@method', '@param', '@return']
+    result.sort()
+    return result
 
-    result = {}
-    a = testy.find('@')
-    result['description'] = testy[:a]
-    testy = testy[a:]
 
-    breaks = []
-    for v in valid:
-        breaks.extend(index(testy, v))
+def indexString(s, sub):
+    index = 0
+    result = []
 
-    breaks.sort()
+    while index < len(s):
+        index = s.find(sub, index)
+        if index == -1:
+            break
 
-    testa = testy
-    for i in range(len(breaks)):
-        if i == 0:
-            line = testa[:breaks[i+1]]
-        elif i == len(breaks) - 1:
-            line = testa[breaks[i]:]
-        else:
-            line = testa[breaks[i]:breaks[i+1]]
+        result.append(index)
+        index += len(sub)
 
-        ws = line.find(' ')
-        if ws > 0:
-            key = line[:ws]
-            value = line[ws:].strip()
-            if key == '@param':
-                if key in result.keys():
-                    result[key].append(value)
-                else:
-                    result[key] = [value]
-            else:
-                result[key] = value
+    result.sort()
+    return result
 
-    #result['name'] = name
 
-    #print(result)
-    out(result)
+def split(s, index):
+    result = []
+    start = 0
+
+    for end in index:
+        sub = s[start:end]
+
+        if len(sub) > 0:
+            result.append(sub)
+
+        start = end
+
+    result.append(s[start:])
+
+    return result
 
 
 def out(o):
@@ -139,21 +95,6 @@ def out(o):
 
     #print('-----------------------')
     print(result)
-
-
-def index(s, sub):
-    index = 0
-    result = []
-
-    while index < len(s):
-        index = s.find(sub, index)
-        if index == -1:
-            break
-
-        result.append(index)
-        index += len(sub)
-
-    return result
 
 
 if __name__ == '__main__':
