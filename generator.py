@@ -1,3 +1,4 @@
+import index
 import re
 
 
@@ -9,8 +10,8 @@ def generator():
 
         for comment in comments:
             comment = cleanComment(comment)
-            index = indexArray(comment, tags)
-            parts = split(comment, index)
+            positions = index.array(comment, tags)
+            parts = index.split(comment, positions)
 
             print(comment)
             print(parts)
@@ -21,51 +22,6 @@ def cleanComment(comment):
     comment = comment.replace('/**', '', 1)
     comment = comment.replace('*/', '')
     comment = comment.strip()
-
-    return comment
-
-
-def indexArray(s, subs):
-    result = []
-
-    for sub in subs:
-        result.extend(indexString(s, sub))
-
-    result.sort()
-    return result
-
-
-def indexString(s, sub):
-    index = 0
-    result = []
-
-    while index < len(s):
-        index = s.find(sub, index)
-        if index == -1:
-            break
-
-        result.append(index)
-        index += len(sub)
-
-    result.sort()
-    return result
-
-
-def split(s, index):
-    result = []
-    start = 0
-
-    for end in index:
-        sub = s[start:end]
-
-        if len(sub) > 0:
-            result.append(sub)
-
-        start = end
-
-    result.append(s[start:])
-
-    return result
 
 
 def out(o):
