@@ -23,6 +23,8 @@ def cleanComment(comment):
     comment = comment.replace('*/', '')
     comment = comment.strip()
 
+    return comment
+
 
 def out(o):
     result = ''
@@ -40,16 +42,10 @@ def out(o):
         for p in o['@param']:
             m = re.match(r'(\w+) \{(\w+?)\} (.+)', p)
             if m:
-                #print(m.group())
-                #print(m.group(1))
-                #print(m.group(2))
-                #print(m.group(3))
                 result += '**' + m.group(1) + '**'
                 result += ' *' + m.group(2) + '*'
                 result += ' ' + m.group(3) + '\n\n'
-            #result += p + '\n'
 
-    #print('-----------------------')
     print(result)
 
 
