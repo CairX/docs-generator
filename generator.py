@@ -59,6 +59,7 @@ class Section(object):
 
 def generator():
     tags = ['@class', '@method', '@param', '@return']
+    documentation = ''
 
     with open('test.js', 'r') as f:
         comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
@@ -68,7 +69,10 @@ def generator():
             positions = index.array(comment, tags)
             parts = index.split(comment, positions)
 
-            print(Section(parts))
+            documentation += '\n\n' + str(Section(parts))
+
+    with open('documentation.md', 'w') as f:
+        f.write(documentation)
 
 
 def cleanComment(comment):
