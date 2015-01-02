@@ -1,5 +1,6 @@
 import index
 import re
+import sys
 
 
 class Param(object):
@@ -57,19 +58,22 @@ class Section(object):
         return result
 
 
-def generator():
+def generator(path):
     tags = ['@class', '@method', '@param', '@return']
     documentation = ''
 
-    with open('test.js', 'r') as f:
-        comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
+    try:
+        with open(path, 'r') as f:
+            comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
 
-        for comment in comments:
-            comment = cleanComment(comment)
-            positions = index.array(comment, tags)
-            parts = index.split(comment, positions)
+            for comment in comments:
+                comment = cleanComment(comment)
+                positions = index.array(comment, tags)
+                parts = index.split(comment, positions)
 
-            documentation += '\n\n' + str(Section(parts))
+                documentation += '\n\n' + str(Section(parts))
+    except FileNotFoundError:
+        print('File not found:', path)
 
     with open('documentation.md', 'w') as f:
         f.write(documentation)
@@ -86,4 +90,4 @@ def cleanComment(comment):
 
 if __name__ == '__main__':
     print('Generator')
-    generator()
+    generator(sys.argv[1])
