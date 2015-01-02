@@ -58,22 +58,25 @@ class Section(object):
         return result
 
 
-def generator(path):
+def generator(paths):
     tags = ['@class', '@method', '@param', '@return']
     documentation = ''
 
-    try:
-        with open(path, 'r') as f:
-            comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
+    for path in paths:
+        try:
+            with open(path, 'r') as f:
+                comments = re.findall(r'(\/\*\*.+?\*\/)', f.read(), re.DOTALL)
 
-            for comment in comments:
-                comment = cleanComment(comment)
-                positions = index.array(comment, tags)
-                parts = index.split(comment, positions)
+                for comment in comments:
+                    comment = cleanComment(comment)
+                    positions = index.array(comment, tags)
+                    parts = index.split(comment, positions)
 
-                documentation += '\n\n' + str(Section(parts))
-    except FileNotFoundError:
-        print('File not found:', path)
+                    documentation += '\n\n' + str(Section(parts))
+
+            print('Documentation done:', path)
+        except FileNotFoundError:
+            print('File not found:', path)
 
     with open('documentation.md', 'w') as f:
         f.write(documentation)
@@ -90,4 +93,4 @@ def cleanComment(comment):
 
 if __name__ == '__main__':
     print('Generator')
-    generator(sys.argv[1])
+    generator(sys.argv[1:])
