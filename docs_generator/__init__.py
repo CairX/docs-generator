@@ -1,4 +1,4 @@
-import index
+from docs_generator import index
 import re
 import sys
 
@@ -72,7 +72,7 @@ def generator(paths):
                     positions = index.array(comment, tags)
                     parts = index.split(comment, positions)
 
-                    documentation += '\n\n' + str(Section(parts))
+                    documentation += str(Section(parts)) + '\n\n'
 
             print('Documentation done:', path)
         except FileNotFoundError:
@@ -91,6 +91,6 @@ def cleanComment(comment):
     return comment
 
 
-if __name__ == '__main__':
+def main():
     print('Generator')
     generator(sys.argv[1:])

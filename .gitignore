@@ -3,5 +3,9 @@ test.js
 test2.js
 documentation.md
 
-# Byte-compiled / optimized / DLL files
+# Cache
 __pycache__/
+
+# Build
+build/
+docs_generator.egg-info/
