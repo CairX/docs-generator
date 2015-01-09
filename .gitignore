@@ -1,7 +1,5 @@
 # Test cases
-test.js
-test2.js
-documentation.md
+test/
 
 # Cache
 __pycache__/
