@@ -19,16 +19,17 @@ class Param(object):
         return result
 
 
-class Section(object):
+class Comment(object):
 
     def __init__(self, parts):
+        self.bind = None
         self.params = []
 
         for part in parts:
             part = part.strip()
 
-            if part.startswith('@class'):
-                self.clazz = part.replace('@class', '').strip()
+            if part.startswith('@bind'):
+                self.bind = part.replace('@bind', '').strip()
 
             elif part.startswith('@method'):
                 self.method = part.replace('@method', '').strip()
@@ -41,16 +42,32 @@ class Section(object):
 
     def __str__(self):
         result = ''
-        if hasattr(self, 'clazz'):
-            result += '# ' + self.clazz + '\n'
 
         if hasattr(self, 'method'):
-            result += '## ' + self.method + '\n'
+            result += '\n\n## ' + self.method
 
         if hasattr(self, 'description'):
-            result += self.description + '\n\n'
+            result += '\n' + self.description + '\n'
 
         for param in self.params:
-            result += '* ' + str(param) + '\n'
+            result += '\n* ' + str(param)
 
         return result
+
+
+class Section(object):
+
+    def __init__(self, name):
+        self.name = name
+        self.comments = []
+
+    def __str__(self):
+        result = '# ' + self.name
+
+        for comment in self.comments:
+            result += str(comment)
+
+        return result
+
+    def add(self, comment):
+        self.comments.append(comment)

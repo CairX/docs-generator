@@ -1,12 +1,17 @@
 from docs_generator import index
-from docs_generator.parts import Section
+from docs_generator.parts import Section, Comment
 import re
 import sys
 
 
+def main():
+    print('Generator')
+    generator(sys.argv[1:])
+
+
 def generator(paths):
-    tags = ['@class', '@method', '@param', '@return']
-    documentation = ''
+    tags = ['@bind', '@method', '@param', '@return', '@section']
+    sections = {}
 
     for path in paths:
         try:
@@ -18,14 +23,21 @@ def generator(paths):
                     positions = index.array(comment, tags)
                     parts = index.split(comment, positions)
 
-                    documentation += str(Section(parts)) + '\n\n'
+                    title = getSectionTitle(parts)
+
+                    if title:
+                        sections[title] = Section(title)
+                    else:
+                        comment = Comment(parts)
+                        sections[comment.bind].add(comment)
 
             print('Documentation done:', path)
         except FileNotFoundError:
             print('File not found:', path)
 
     with open('documentation.md', 'w') as f:
-        f.write(documentation)
+        for section in sections:
+            f.writelines(str(sections[section]) + '\n\n')
 
 
 def cleanComment(comment):
@@ -37,6 +49,14 @@ def cleanComment(comment):
     return comment
 
 
-def main():
-    print('Generator')
-    generator(sys.argv[1:])
+def getSectionTitle(parts):
+    section = None
+
+    for part in parts:
+        part = part.strip()
+
+        if part.startswith('@section'):
+            section = part.replace('@section', '').strip()
+            break
+
+    return section
