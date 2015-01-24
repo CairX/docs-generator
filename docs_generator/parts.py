@@ -19,6 +19,23 @@ class Param(object):
         return result
 
 
+class Return(object):
+
+    def __init__(self, s):
+        match = re.match(r'\{(\w+?)\} (.+)', s)
+
+        if match:
+            self.type = match.group(1)
+            self.description = match.group(2)
+
+    def __str__(self):
+        result = '**Return**'
+        result += ' *' + self.type + '*'
+        result += ' ' + self.description
+
+        return result
+
+
 class Comment(object):
 
     def __init__(self, parts):
@@ -37,6 +54,9 @@ class Comment(object):
             elif part.startswith('@param'):
                 self.params.append(Param(part.replace('@param', '').strip()))
 
+            elif part.startswith('@return'):
+                self.returnz = Return(part.replace('@return', '').strip())
+
             elif not part.startswith('@'):
                 self.description = part.strip()
 
@@ -51,6 +71,9 @@ class Comment(object):
 
         for param in self.params:
             result += '\n* ' + str(param)
+
+        if hasattr(self, 'returnz'):
+            result += '\n' + str(self.returnz) + '\n'
 
         return result
 
