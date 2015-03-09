@@ -39,3 +39,12 @@ def split(s, index):
     result.append(s[start:])
 
     return result
+
+
+def header(s, level):
+    header = ''
+
+    for l in range(0, level):
+        header += '#'
+
+    return header + ' ' + s
