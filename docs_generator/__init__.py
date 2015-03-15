@@ -27,11 +27,11 @@ def generator(paths, config):
                 comments = re.findall(pattern, f.read(), re.DOTALL)
 
                 for comment in comments:
-                    comment = cleanComment(comment)
+                    comment = clean_comment(comment)
                     positions = index.array(comment, tags)
                     parts = index.split(comment, positions)
 
-                    title = getSectionTitle(parts)
+                    title = get_section_title(parts)
 
                     if title:
                         sections[title] = Section(title)
@@ -52,14 +52,14 @@ def generator(paths, config):
             f.writelines(str(sections[section]) + '\n\n')
 
 
-def cleanComment(comment):
+def clean_comment(comment):
     comment = re.sub(r'(\n.+\*\s+)', ' ', comment)
     comment = comment.strip()
 
     return comment
 
 
-def getSectionTitle(parts):
+def get_section_title(parts):
     section = None
 
     for part in parts:
