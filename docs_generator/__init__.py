@@ -16,10 +16,9 @@ def generator(paths, config):
     pattern = re.escape(config.get('start', '/*').strip('"'))
     pattern += '(.+?)'
     pattern += re.escape(config.get('end', '*/').strip('"'))
-    # print(pattern)
 
     tags = ['@bind', '@method', '@param', '@return', '@section']
-    sections = {}
+    sections = []
 
     for path in paths:
         try:
@@ -34,14 +33,14 @@ def generator(paths, config):
                     title = get_section_title(parts)
 
                     if title:
-                        sections[title] = Section(title)
+                        sections.append(Section(title))
                         print(title)
                     else:
                         try:
                             comment = Comment(parts)
-                            sections[comment.bind].add(comment)
-                        except KeyError:
-                            print('Missing bind.')
+                            sections[-1].add(comment)
+                        except:
+                            print('Missing section.')
 
             print('Documentation done:', path)
         except FileNotFoundError:
@@ -49,7 +48,7 @@ def generator(paths, config):
 
     with open('documentation.md', 'w') as f:
         for section in sections:
-            f.writelines(str(sections[section]) + '\n\n')
+            f.writelines(str(section) + '\n\n')
 
 
 def clean_comment(comment):
@@ -70,3 +69,7 @@ def get_section_title(parts):
             break
 
     return section
+
+
+def get_level(string):
+    return ((len(string) - len(string.lstrip(' '))) / 4)
