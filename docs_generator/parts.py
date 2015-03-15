@@ -73,7 +73,7 @@ class Comment(object):
             result += '\n* ' + str(param)
 
         if hasattr(self, 'returnz'):
-            result += '\n' + str(self.returnz) + '\n'
+            result += '\n\n' + str(self.returnz) + '\n'
 
         return result
 
