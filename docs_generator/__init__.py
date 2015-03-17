@@ -5,6 +5,12 @@ import re
 import sys
 
 
+"""
+    TODO
+        - Add ignore option for part of method name in config ex. this or self.
+"""
+
+
 def main():
     print('Generator')
     config = ConfigParser()
@@ -19,8 +25,7 @@ def generator(paths, config):
     pattern = re.escape(start)
     pattern += '\n[\s\S]*?'
     pattern += re.escape(end)
-    pattern += '\n.*?'
-    print(pattern)
+    pattern += '\n^.*$'
 
     tags = ['@bind', '@method', '@param', '@return', '@section']
     sections = []
@@ -28,12 +33,10 @@ def generator(paths, config):
     for path in paths:
         try:
             with open(path, 'r') as f:
-                comments = re.findall(pattern, f.read())
-                print(comments)
+                comments = re.findall(pattern, f.read(), re.MULTILINE)
 
                 for comment in comments:
-                    comment = clean_comment(comment, start, end)
-                    print(comment)
+                    comment, extra_line = clean_comment(comment, start, end)
                     positions = index.array(comment, tags)
                     parts = index.split(comment, positions)
 
@@ -41,10 +44,10 @@ def generator(paths, config):
 
                     if title:
                         sections.append(Section(title))
-                        print(title)
                     else:
+                        comment = Comment(parts, extra_line)
                         try:
-                            comment = Comment(parts)
+
                             sections[-1].add(comment)
                         except:
                             print('Missing section.')
@@ -59,12 +62,16 @@ def generator(paths, config):
 
 
 def clean_comment(comment, start, end):
+    extra_line_position = comment.rfind(end) + len(end)
+    extra_line = comment[extra_line_position:]
+    comment = comment[:extra_line_position]
+
     comment = comment.replace(start, '')
     comment = comment.replace(end, '')
     comment = re.sub(r'(\n.+\*\s+)', ' ', comment)
     comment = comment.strip()
 
-    return comment
+    return comment, extra_line
 
 
 def get_section_title(parts):

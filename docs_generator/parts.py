@@ -38,9 +38,13 @@ class Return(object):
 
 class Comment(object):
 
-    def __init__(self, parts):
+    def __init__(self, parts, extra_line):
         self.bind = None
         self.params = []
+
+        name = re.search(r'(\S+)\s?=\s?function\(\w+\)', extra_line)
+        if name:
+            self.method = str(name.group(1))
 
         for part in parts:
             part = part.strip()
