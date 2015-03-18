@@ -15,7 +15,11 @@ def main():
     print('Generator')
     config = ConfigParser()
     config.read('documentation.conf')
-    generator(sys.argv[1:], config['comments'])
+
+    if config.sections():
+        generator(sys.argv[1:], config['comments'])
+    else:
+        print('Missing config file: documentation.conf')
 
 
 def generator(paths, config):

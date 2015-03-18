@@ -42,7 +42,7 @@ class Comment(object):
         self.bind = None
         self.params = []
 
-        name = re.search(r'(\S+)\s?=\s?function\(\w+\)', extra_line)
+        name = re.search(r'(\S+)\s?=\s?function\s?\(.*?\)', extra_line)
         if name:
             self.method = str(name.group(1))
 
