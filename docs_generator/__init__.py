@@ -24,7 +24,9 @@ def main():
 
 def generator(paths, config):
     start = config.get('start', '/*').strip('"')
+    between = config.get('between', '*').strip('"')
     end = config.get('end', '*/').strip('"')
+    ignore = config.get('ignore', '')
 
     pattern = re.escape(start)
     pattern += '\n[\s\S]*?'
@@ -40,7 +42,8 @@ def generator(paths, config):
                 comments = re.findall(pattern, f.read(), re.MULTILINE)
 
                 for comment in comments:
-                    comment, extra_line = clean_comment(comment, start, end)
+                    comment, extra_line = clean_comment(comment, start, between, end)
+                    extra_line = extra_line.replace(ignore, '')
                     positions = index.array(comment, tags)
                     parts = index.split(comment, positions)
 
@@ -65,14 +68,16 @@ def generator(paths, config):
             f.writelines(str(section) + '\n\n')
 
 
-def clean_comment(comment, start, end):
+def clean_comment(comment, start, between, end):
     extra_line_position = comment.rfind(end) + len(end)
     extra_line = comment[extra_line_position:]
     comment = comment[:extra_line_position]
 
     comment = comment.replace(start, '')
     comment = comment.replace(end, '')
-    comment = re.sub(r'(\n.+\*\s+)', ' ', comment)
+    pattern = '(\s*' + re.escape(between) + '\s*)'
+    #print(pattern)
+    comment = re.sub(pattern, ' ', comment)
     comment = comment.strip()
 
     return comment, extra_line

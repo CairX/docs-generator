@@ -1,3 +1,6 @@
+from configparser import ConfigParser
+
+
 def array(s, subs):
     result = []
 
@@ -41,10 +44,14 @@ def split(s, index):
     return result
 
 
-def header(s, level):
+def header(level, s):
+    config = ConfigParser()
+    config.read('documentation.conf')
+    base = int(config['comments'].get('header-level', 1).strip('"'))
+
     header = ''
 
-    for l in range(0, level):
+    for l in range(1, base + level):
         header += '#'
 
     return header + ' ' + s
