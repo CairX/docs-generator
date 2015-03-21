@@ -1,3 +1,4 @@
+from docs_generator import index
 import re
 
 
@@ -68,7 +69,7 @@ class Comment(object):
         result = ''
 
         if hasattr(self, 'method'):
-            result += '\n\n## ' + self.method
+            result += '\n\n' + index.header(2, self.method)
 
         if hasattr(self, 'description'):
             result += '\n' + self.description + '\n'
@@ -89,7 +90,7 @@ class Section(object):
         self.comments = []
 
     def __str__(self):
-        result = '# ' + self.name
+        result = index.header(1, self.name)
 
         for comment in self.comments:
             result += str(comment)
