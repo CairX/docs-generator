@@ -50,7 +50,7 @@ def generator(paths, config):
                     title = get_section_title(parts)
 
                     if title:
-                        sections.append(Section(title))
+                        sections.append(Section(title, parts))
                     else:
                         comment = Comment(parts, extra_line)
                         try:
@@ -76,7 +76,6 @@ def clean_comment(comment, start, between, end):
     comment = comment.replace(start, '')
     comment = comment.replace(end, '')
     pattern = '(\s*' + re.escape(between) + '\s*)'
-    #print(pattern)
     comment = re.sub(pattern, ' ', comment)
     comment = comment.strip()
 

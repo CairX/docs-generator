@@ -85,12 +85,21 @@ class Comment(object):
 
 class Section(object):
 
-    def __init__(self, name):
+    def __init__(self, name, parts):
         self.name = name
         self.comments = []
 
+        for part in parts:
+            part = part.strip()
+
+            if not part.startswith('@'):
+                self.description = part.strip()
+
     def __str__(self):
         result = index.header(1, self.name)
+
+        if hasattr(self, 'description'):
+            result += '\n' + self.description
 
         for comment in self.comments:
             result += str(comment)
